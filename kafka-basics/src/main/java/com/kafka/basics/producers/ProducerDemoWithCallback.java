@@ -25,11 +25,14 @@ public class ProducerDemoWithCallback {
 
 
         for (int i = 0; i < 30; i++) {
-            String key = String.valueOf(i % 3);
-            ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java_topic", key, "Hello World " + i);
+            ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java_topic", "Hello World " + i);
             producer.send(producerRecord, (recordMetadata, e) -> {
                 if (e == null) {
-                    LOGGER.info("Key - {}, partition - {}", key, recordMetadata.partition());
+                    LOGGER.info("Received new metadata \n\t" +
+                            "Topic: " + recordMetadata.topic() + "\n\t" +
+                            "Partition: " + recordMetadata.partition() + "\n\t" +
+                            "Offset: " + recordMetadata.offset() + "\n\t" +
+                            "Timestamp: " + recordMetadata.timestamp());
                     return;
                 }
                 LOGGER.error("Error producing: ", e);
